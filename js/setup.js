@@ -13,10 +13,7 @@ function getRandomNumber(max) {
 }
 
 function getWizardName(names = WIZARDS_DATA.NAMES, surnames = WIZARDS_DATA.SURNAMES) {
-  if (getRandomNumber(2)) {
-    return `${getElementArray(names)} ${getElementArray(surnames)}`;
-  }
-  return `${getElementArray(surnames)} ${getElementArray(names)}`;
+  return getRandomNumber(2) ? `${getElementArray(names)} ${getElementArray(surnames)}` : `${getElementArray(surnames)} ${getElementArray(names)}`;
 }
 
 function getElementArray(arr) {
@@ -30,14 +27,13 @@ function getWizards(wizardData = WIZARDS_DATA) {
     wizard.name = getWizardName();
     wizard.coatColor = getElementArray(wizardData.COAT_COLORS);
     wizard.eyesColor = getElementArray(wizardData.EYES_COLORS);
-    wizards[i] = wizard;
+    wizards.push(wizard);
   }
   return wizards;
 }
 
-function renderWizard(wizard) {
-  const similarWizardTemplate = document.querySelector(`#similar-wizard-template`).content.querySelector(`.setup-similar-item`);
-  const wizardElement = similarWizardTemplate.cloneNode(true);
+function renderWizard(wizard, wizardTemplate) {
+  const wizardElement = wizardTemplate.cloneNode(true);
   wizardElement.querySelector(`.setup-similar-label`).textContent = wizard.name;
   wizardElement.querySelector(`.wizard-coat`).style.fill = wizard.coatColor;
   wizardElement.querySelector(`.wizard-eyes`).style.fill = wizard.eyesColor;
@@ -49,11 +45,12 @@ function main() {
   userDialog.classList.remove(`hidden`);
 
   const similarListElement = userDialog.querySelector(`.setup-similar-list`);
+  const similarWizardTemplate = document.querySelector(`#similar-wizard-template`).content.querySelector(`.setup-similar-item`);
 
   const wizards = getWizards();
   const fragment = document.createDocumentFragment();
   for (let i = 0; i < wizards.length; i++) {
-    fragment.appendChild(renderWizard(wizards[i]));
+    fragment.appendChild(renderWizard(wizards[i], similarWizardTemplate));
   }
   similarListElement.appendChild(fragment);
   userDialog.querySelector(`.setup-similar`).classList.remove(`hidden`);
