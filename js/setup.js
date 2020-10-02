@@ -56,42 +56,47 @@ function eventHandlerSetup(setup) {
   const setupPlayerFireballWrap = setupPlayer.querySelector(`.setup-fireball-wrap`);
   const fireballInput = setupPlayerFireballWrap.querySelector(`input[name="fireball-color"]`);
 
-  function onPopupEscPress(evt) {
-    if (evt.key === `Escape` && !evt.target.matches(`.setup-user-name`)) {
+  // Настройка персонажа и фаербола
+  function changeWizardAndFireball(evt) {
+    if (evt.target.matches(`.wizard-coat`)) {
+      evt.target.style.fill = getElementArray(WIZARDS_DATA.COAT_COLORS);
+      coatInput.value = evt.target.style.fill;
+
+    } else if (evt.target.matches(`.wizard-eyes`)) {
+      evt.target.style.fill = getElementArray(WIZARDS_DATA.EYES_COLORS);
+      eyesInput.value = evt.target.style.fill;
+
+    } else if (evt.target.matches(`.setup-fireball`)) {
+      const colorFireball = getElementArray(WIZARDS_DATA.FIREBALL_COLORS);
+
+      setupPlayerFireballWrap.style.background = colorFireball;
+      fireballInput.value = colorFireball;
+    }
+  }
+
+  function onPopupKeyPress(evt) {
+    if ((evt.key === `Escape` || evt.key === `Enter`) && !evt.target.matches(`.setup-user-name`)) {
       evt.preventDefault();
       closePopup();
     }
   }
 
+  function onPopupCloseClick() {
+    closePopup();
+  }
+
   function openPopup() {
     setup.classList.remove(`hidden`);
-    document.addEventListener(`keydown`, onPopupEscPress);
+    document.addEventListener(`keydown`, onPopupKeyPress);
+    setupClose.addEventListener(`click`, onPopupCloseClick);
+    setupPlayer.addEventListener(`click`, changeWizardAndFireball);
   }
 
   function closePopup() {
     setup.classList.add(`hidden`);
-    document.removeEventListener(`keydown`, onPopupEscPress);
-  }
-
-  // Настройка персонажа и фаербола
-  function changeWizardAndFireball(evt) {
-    if (evt.target) {
-
-      if (evt.target.matches(`.wizard-coat`)) {
-        evt.target.style.fill = getElementArray(WIZARDS_DATA.COAT_COLORS);
-        coatInput.value = evt.target.style.fill;
-
-      } else if (evt.target.matches(`.wizard-eyes`)) {
-        evt.target.style.fill = getElementArray(WIZARDS_DATA.EYES_COLORS);
-        eyesInput.value = evt.target.style.fill;
-
-      } else if (evt.target.matches(`.setup-fireball`)) {
-        const colorFireball = getElementArray(WIZARDS_DATA.FIREBALL_COLORS);
-
-        setupPlayerFireballWrap.style.background = colorFireball;
-        fireballInput.value = colorFireball;
-      }
-    }
+    document.removeEventListener(`keydown`, onPopupKeyPress);
+    setupClose.removeEventListener(`click`, onPopupCloseClick);
+    setupPlayer.removeEventListener(`click`, changeWizardAndFireball);
   }
 
   setupOpen.addEventListener(`click`, function () {
@@ -104,24 +109,10 @@ function eventHandlerSetup(setup) {
     }
   });
 
-  setupClose.addEventListener(`click`, function () {
-    closePopup();
-  });
-
-  setupClose.addEventListener(`keydown`, function (evt) {
-    if (evt.key === `Enter`) {
-      closePopup();
-    }
-  });
-
-  setupPlayer.addEventListener(`click`, function (evt) {
-    changeWizardAndFireball(evt);
-  });
 }
 
 function main() {
   const userDialog = document.querySelector(`.setup`);
-
   const similarListElement = userDialog.querySelector(`.setup-similar-list`);
   const similarWizardTemplate = document.querySelector(`#similar-wizard-template`).content.querySelector(`.setup-similar-item`);
 
