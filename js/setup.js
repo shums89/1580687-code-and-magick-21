@@ -8,18 +8,22 @@ const WIZARDS_DATA = {
   EYES_COLORS: [`black`, `red`, `blue`, `yellow`, `green`]
 };
 
+// Генерация случайного числа
 function getRandomNumber(max) {
   return Math.floor(Math.random() * max);
 }
 
+// Получение имени персонажа
 function getWizardName(names = WIZARDS_DATA.NAMES, surnames = WIZARDS_DATA.SURNAMES) {
   return getRandomNumber(2) ? `${getElementArray(names)} ${getElementArray(surnames)}` : `${getElementArray(surnames)} ${getElementArray(names)}`;
 }
 
+// Получение случайного элемента массива
 function getElementArray(arr) {
   return arr[getRandomNumber(arr.length)];
 }
 
+// Получение массива похожий персонажей
 function getWizards(wizardData = WIZARDS_DATA) {
   const wizards = [];
   for (let i = 0; i < wizardData.NUMBER_OF_WIZARDS; i++) {
@@ -32,6 +36,7 @@ function getWizards(wizardData = WIZARDS_DATA) {
   return wizards;
 }
 
+// Отрисовка похожего персонажа
 function renderWizard(wizard, wizardTemplate) {
   const wizardElement = wizardTemplate.cloneNode(true);
   wizardElement.querySelector(`.setup-similar-label`).textContent = wizard.name;
@@ -47,12 +52,17 @@ function main() {
   const similarListElement = userDialog.querySelector(`.setup-similar-list`);
   const similarWizardTemplate = document.querySelector(`#similar-wizard-template`).content.querySelector(`.setup-similar-item`);
 
+  // Генерация массива похожих персонажей
   const wizards = getWizards();
+
+  // Добавление похожих персонажей на форму
   const fragment = document.createDocumentFragment();
   for (let i = 0; i < wizards.length; i++) {
     fragment.appendChild(renderWizard(wizards[i], similarWizardTemplate));
   }
   similarListElement.appendChild(fragment);
+
+  // Вывод на экран блока похожих персонажей
   userDialog.querySelector(`.setup-similar`).classList.remove(`hidden`);
 }
 
